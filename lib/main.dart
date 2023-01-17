@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:movies_mobile/ui/widgets/my_app/my_app.dart';
-import 'package:movies_mobile/ui/widgets/my_app/my_app_models.dart';
+import 'package:movies_mobile/ui/widgets/main_screen/MainScreenModel.dart';
+import 'package:movies_mobile/ui/widgets/main_screen/MainScreenWidget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final model = MyAppModel();
+  final model = MainScreenModel();
   await model.checkAuth();
-  final app = MyApp(model: model);
+  final app = MainScreenWidget(model: model);
   runApp(app);
 }

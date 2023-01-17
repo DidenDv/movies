@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movies_mobile/libary/widgets/inherited/provider.dart';
+import 'package:movies_mobile/library/widgets/inherited/provider.dart';
 import 'package:movies_mobile/ui/widgets/auth_model.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,7 +63,7 @@ class _FormWidgetState extends State<_FormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifyProvider.read<AuthModel>(context);
+    final model = NotifierProvider.read<AuthModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -93,10 +93,10 @@ class _AuthButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifyProvider.watch<AuthModel>(context);
+    final model = NotifierProvider.watch<AuthModel>(context);
     final onPressed = model?.canStartAuth == true ? () => model?.auth(context) : null;
     final child = model?.isAuthProgress == true ?
-    const SizedBox(child: const CircularProgressIndicator(strokeWidth: 2,), width: 15, height: 15,) :
+    const SizedBox(width: 15, height: 15,child: CircularProgressIndicator(strokeWidth: 2,),) :
     const Text('Login');
 
     return ElevatedButton(
@@ -111,7 +111,7 @@ class _ErrorMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = NotifyProvider.watch<AuthModel>(context)?.errorMessage;
+    final errorMessage = NotifierProvider.watch<AuthModel>(context)?.errorMessage;
 
     if(errorMessage == null) return const SizedBox.shrink();
     return Text(
