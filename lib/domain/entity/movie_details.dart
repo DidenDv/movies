@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:movies_mobile/domain/entity/movie_details_credits.dart';
+import 'package:movies_mobile/domain/entity/movie_details_videos.dart';
 import 'package:movies_mobile/domain/entity/parse_date.dart';
 part 'movie_details.g.dart';
 
@@ -32,6 +33,7 @@ class MovieDetails {
   final double voteAverage;
   final int voteCount;
   final MovieDetailsCredits credits;
+  final MovieDetailsVideos videos;
 
   MovieDetails({
     required this.belongsToCollection,
@@ -59,7 +61,8 @@ class MovieDetails {
     required this.video,
     required this.voteAverage,
     required this.voteCount,
-    required this.credits
+    required this.credits,
+    required this.videos
   });
 
   factory MovieDetails.fromJson(Map<String, dynamic> json) => _$MovieDetailsFromJson(json);

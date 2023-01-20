@@ -3,7 +3,20 @@ import 'dart:io';
 import 'package:movies_mobile/domain/entity/movie_details.dart';
 import 'package:movies_mobile/domain/entity/popular_movie_response.dart';
 
-enum ApiClientExceptionType { network, auth, other }
+enum ApiClientExceptionType { network, auth, other, sessionExpired }
+
+enum MediaType { movie, tv }
+
+extension MediaTypeAsString on MediaType {
+  String asString() {
+    switch (this) {
+      case MediaType.movie:
+        return 'movie';
+      case MediaType.tv:
+        return 'tv';
+    }
+  }
+}
 
 class ApiClientException implements Exception {
   final ApiClientExceptionType type;
@@ -17,7 +30,7 @@ class ApiClient {
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = '6da038d6c5eaeb50367914a0174dce16';
 
-  static String imageUrl(String? path) => path != null ? _imageUrl + path: '';
+  static String imageUrl(String? path) => path != null ? _imageUrl + path : '';
 
   Uri makeUri(String path, [Map<String, dynamic>? parameters]) {
     final uri = Uri.parse('$_host$path');
@@ -77,14 +90,35 @@ class ApiClient {
     }
   }
 
-  Future<String> auth(
-      {required String username, required String password}) async {
+  Future<String> auth({
+    required String username,
+    required String password,
+  }) async {
     final token = await _makeToken();
     final validToken = await _validateUser(
         username: username, password: password, requestToken: token);
     final sessionId = await _makeSession(requestToken: validToken);
 
     return sessionId;
+  }
+
+  Future<int> getAccountInfo(String sessionId) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final result = jsonMap['id'] as int;
+      return result;
+    }
+
+    final result = await _get(
+      'account',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'session_id': sessionId,
+      },
+    );
+
+    return result;
   }
 
   Future<String> _makeToken() async {
@@ -148,17 +182,63 @@ class ApiClient {
       <String, dynamic>{
         'api_key': _apiKey,
         'language': locale,
-        'append_to_response': 'credits'
+        'append_to_response': 'credits,videos'
       },
     );
 
     return result;
   }
 
-  Future<String> _validateUser(
-      {required String username,
-      required String password,
-      required String requestToken}) async {
+  Future<bool> isFavorite(int movieId, String sessionId) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final result = jsonMap['favorite'] as bool;
+      return result;
+    }
+
+    final result = await _get(
+      'movie/$movieId/account_states',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'session_id': sessionId,
+      },
+    );
+
+    return result;
+  }
+
+  Future<int> markAsFavorite({
+    required int accountId,
+    required String sessionId,
+    required int mediaId,
+    required MediaType mediaType,
+    required bool isFavorite,
+  }) async {
+    parser(dynamic json) {
+      return 1;
+    }
+
+    final parameters = <String, dynamic>{
+      "media_type": mediaType.asString(),
+      "media_id": mediaId,
+      "favorite": isFavorite
+    };
+
+    final result = await _post(
+      'account/$accountId/favorite',
+      parameters,
+      parser,
+      <String, dynamic>{'api_key': _apiKey, 'session_id': sessionId},
+    );
+    return result;
+  }
+
+  Future<String> _validateUser({
+    required String username,
+    required String password,
+    required String requestToken,
+  }) async {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final token = jsonMap['request_token'] as String;
@@ -200,6 +280,8 @@ void _validateResponse(HttpClientResponse response, dynamic json) {
     final code = status is int ? status : 0;
     if (code == 30) {
       throw ApiClientException(ApiClientExceptionType.auth);
+    } else if (code == 3) {
+      throw ApiClientException(ApiClientExceptionType.sessionExpired);
     } else {
       throw ApiClientException(ApiClientExceptionType.other);
     }

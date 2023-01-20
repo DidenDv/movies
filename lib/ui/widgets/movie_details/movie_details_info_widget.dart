@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movies_mobile/domain/api_client/api_client.dart';
 import 'package:movies_mobile/domain/entity/movie_details_credits.dart';
 import 'package:movies_mobile/library/widgets/inherited/provider.dart';
+import 'package:movies_mobile/ui/navigation/main_navigation.dart';
 import 'package:movies_mobile/ui/widgets/movie_details/movie_details_model.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -31,6 +32,8 @@ class _TopPosterWidget extends StatelessWidget {
     final model = NotifierProvider.watch<MovieDetailsModel>(context);
     final backdropPath = model?.movieDetails?.backdropPath;
     final posterPath = model?.movieDetails?.posterPath;
+    final IconData icon = model?.isFavorite == true ? Icons.favorite : Icons.favorite_outline;
+
     return AspectRatio(
       aspectRatio: 390 / 219,
       child: Stack(
@@ -45,6 +48,14 @@ class _TopPosterWidget extends StatelessWidget {
             child: posterPath != null
                 ? Image.network(ApiClient.imageUrl(posterPath))
                 : const SizedBox.shrink(),
+          ),
+          Positioned(
+            top: 5,
+            right: 5,
+            child: IconButton(
+              icon: Icon(icon),
+              onPressed: () => model?.toggleFavorite(),
+            ),
           )
         ],
       ),
@@ -88,10 +99,14 @@ class _TotalScore extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsModel>(context);
-    var voteAverage = model?.movieDetails?.voteAverage ?? 0;
+    final movieDetails =
+        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+    var voteAverage = movieDetails?.voteAverage ?? 0;
     voteAverage = voteAverage * 10;
     final percent = voteAverage / 100;
+    final videos = movieDetails?.videos.results
+        ?.where((video) => video.type == 'Trailer' && video.site == 'YouTube');
+    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -122,24 +137,28 @@ class _TotalScore extends StatelessWidget {
           height: 24,
           width: 1,
         ),
-        TextButton(
-            onPressed: () {},
-            child: Row(
-              children: const [
-                Icon(
-                  Icons.play_arrow,
-                  color: Colors.white,
-                  size: 18,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Play trailer',
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
-            )),
+        trailerKey != null
+            ? TextButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                    MainNavigationRouteNames.movieTrailer,
+                    arguments: trailerKey),
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.play_arrow,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      'Play trailer',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                ))
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -307,8 +326,7 @@ class _CrewItemWidget extends StatelessWidget {
             style: const TextStyle(
                 color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
           ),
-          Text(job,
-              style: const TextStyle(color: Colors.white, fontSize: 14)),
+          Text(job, style: const TextStyle(color: Colors.white, fontSize: 14)),
           const SizedBox(
             height: 10,
           )

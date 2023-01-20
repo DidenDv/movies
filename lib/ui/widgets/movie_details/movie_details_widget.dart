@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_mobile/library/widgets/inherited/provider.dart';
+import 'package:movies_mobile/ui/widgets/main_screen/MainScreenModel.dart';
 import 'package:movies_mobile/ui/widgets/movie_details/movie_details_cast_widget.dart';
 import 'package:movies_mobile/ui/widgets/movie_details/movie_details_info_widget.dart';
 import 'package:movies_mobile/ui/widgets/movie_details/movie_details_model.dart';
@@ -12,6 +13,15 @@ class MovieDetailsWidget extends StatefulWidget {
 }
 
 class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
+
+  @override
+  void initState() {
+    super.initState();
+    final model = NotifierProvider.read<MovieDetailsModel>(context);
+    final appModel = Provider.read<MainScreenModel>(context);
+    model?.onSessionExpired = () => appModel?.resetSession(context);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

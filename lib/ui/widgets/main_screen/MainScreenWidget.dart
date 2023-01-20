@@ -10,12 +10,12 @@ import 'package:movies_mobile/ui/widgets/movie_list/movie_list_widget.dart';
 import 'package:movies_mobile/ui/widgets/movie_news/movie_news.dart';
 
 class MainScreenWidget extends StatelessWidget {
-  final MainScreenModel model;
   static final mainNavigation = MainNavigation();
-  const MainScreenWidget({Key? key, required this.model}) : super(key: key);
+  const MainScreenWidget({Key? key,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final model = Provider.read<MainScreenModel>(context);
     return MaterialApp(
       title: 'MoviesMobile',
       theme: ThemeData(
@@ -33,7 +33,7 @@ class MainScreenWidget extends StatelessWidget {
         Locale('en', 'EN'),
       ],
       routes: mainNavigation.routes,
-      initialRoute: mainNavigation.initialRoute(model.isAuth),
+      initialRoute: mainNavigation.initialRoute(model?.isAuth == true),
       onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }

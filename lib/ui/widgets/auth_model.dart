@@ -32,8 +32,10 @@ class AuthModel extends ChangeNotifier {
     _isAuthProgress = true;
     notifyListeners();
     String? sessionId;
+    int? accountId;
     try {
       sessionId = await _apiClient.auth(username: login, password: password);
+      accountId = await _apiClient.getAccountInfo(sessionId);
     } on ApiClientException catch(e) {
       switch (e.type) {
         case ApiClientExceptionType.network:
@@ -45,6 +47,11 @@ class AuthModel extends ChangeNotifier {
         case ApiClientExceptionType.other:
           _errorMessage = 'Something went wrong. Please try again';
           break;
+        case ApiClientExceptionType.sessionExpired:
+          _errorMessage = 'Something went wrong. Please try again';
+          break;
+        default:
+          print('\x1B[33m${ e }\x1B[0m');
       }
     }
 
@@ -53,13 +60,14 @@ class AuthModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    if(sessionId == null) {
+    if(sessionId == null || accountId == null) {
       _errorMessage = 'Something went wrong';
       notifyListeners();
       return;
     }
 
    await _sessionDataProvider.setSessionId(sessionId);
+   await _sessionDataProvider.setAccountId(accountId);
     unawaited(Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen));
   }
 }
