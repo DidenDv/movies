@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_mobile/domain/api_client/api_client.dart';
-import 'package:movies_mobile/domain/entity/movie_details_credits.dart';
+import 'package:movies_mobile/domain/entity/movie/movie_details_credits.dart';
 import 'package:movies_mobile/library/widgets/inherited/provider.dart';
 import 'package:movies_mobile/ui/navigation/main_navigation.dart';
 import 'package:movies_mobile/ui/widgets/movie_details/movie_details_model.dart';

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:movies_mobile/domain/entity/movie_details.dart';
-import 'package:movies_mobile/domain/entity/popular_movie_response.dart';
+import 'package:movies_mobile/domain/entity/movie/movie_details.dart';
+import 'package:movies_mobile/domain/entity/movie/popular_movie_response.dart';
+import 'package:movies_mobile/domain/entity/series/popular_series_response.dart';
+import 'package:movies_mobile/domain/entity/series/series_details.dart';
 
 enum ApiClientExceptionType { network, auth, other, sessionExpired }
 
@@ -47,6 +49,7 @@ class ApiClient {
     Map<String, dynamic>? parameters,
   ]) async {
     final url = makeUri(path, parameters);
+
     try {
       final request = await _client.getUrl(url);
       final response = await request.close();
@@ -149,6 +152,22 @@ class ApiClient {
     return result;
   }
 
+  Future<PopularSeriesResponse> popularSeries(int page, String locale) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularSeriesResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = await _get('tv/popular', parser, <String, dynamic>{
+      'api_key': _apiKey,
+      'page': page.toString(),
+      'language': locale
+    });
+
+    return result;
+  }
+
   Future<PopularMovieResponse> searchMovie(
       int page, String locale, String query) async {
     parser(dynamic json) {
@@ -163,6 +182,24 @@ class ApiClient {
       'page': page.toString(),
       'language': locale,
       'include_adult': true.toString()
+    });
+
+    return result;
+  }
+
+  Future<PopularSeriesResponse> searchSeries(
+      int page, String locale, String query) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularSeriesResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = await _get('search/tv', parser, <String, dynamic>{
+      'api_key': _apiKey,
+      'query': query,
+      'page': page.toString(),
+      'language': locale
     });
 
     return result;
@@ -189,7 +226,28 @@ class ApiClient {
     return result;
   }
 
-  Future<bool> isFavorite(int movieId, String sessionId) async {
+  Future<SeriesDetails> seriesDetails(int seriesId, String locale) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = SeriesDetails.fromJson(jsonMap);
+
+      return response;
+    }
+
+    final result = await _get(
+      'tv/$seriesId',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'language': locale,
+        'append_to_response': 'credits,videos'
+      },
+    );
+
+    return result;
+  }
+
+  Future<bool> isFavorite(int movieId, String sessionId, String key) async {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final result = jsonMap['favorite'] as bool;
@@ -197,7 +255,7 @@ class ApiClient {
     }
 
     final result = await _get(
-      'movie/$movieId/account_states',
+      '$key/$movieId/account_states',
       parser,
       <String, dynamic>{
         'api_key': _apiKey,
@@ -275,13 +333,16 @@ class ApiClient {
 }
 
 void _validateResponse(HttpClientResponse response, dynamic json) {
-  if (response.statusCode == 401) {
+  if (response.statusCode == 401 || response.statusCode == 404) {
     final dynamic status = json['status_code'];
+    final dynamic statusMessage = json['status_message'];
     final code = status is int ? status : 0;
     if (code == 30) {
       throw ApiClientException(ApiClientExceptionType.auth);
     } else if (code == 3) {
       throw ApiClientException(ApiClientExceptionType.sessionExpired);
+    } else if(code == 34) {
+      print(statusMessage);
     } else {
       throw ApiClientException(ApiClientExceptionType.other);
     }

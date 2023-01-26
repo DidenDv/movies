@@ -6,12 +6,18 @@ import 'package:movies_mobile/ui/widgets/main_screen/MainScreenWidget.dart';
 import 'package:movies_mobile/ui/widgets/movie_details/movie_details_model.dart';
 import 'package:movies_mobile/ui/widgets/movie_details/movie_details_widget.dart';
 import 'package:movies_mobile/ui/widgets/movie_details/movie_trailer_widget.dart';
+import 'package:movies_mobile/ui/widgets/series_details/series_details_model.dart';
+import 'package:movies_mobile/ui/widgets/series_details/series_details_widget.dart';
+import 'package:movies_mobile/ui/widgets/series_details/series_trailer_widget.dart';
 
 abstract class MainNavigationRouteNames {
   static const auth = 'auth';
   static const mainScreen = '/';
   static const movieDetails = '/movie_details';
   static const movieTrailer = '/movie_details/trailer';
+
+  static const seriesDetails = '/series_details';
+  static const seriesTrailer = '/series_details/trailer';
 }
 
 class MainNavigation {
@@ -33,13 +39,31 @@ class MainNavigation {
         return MaterialPageRoute(
           builder: (context) => NotifierProvider(
               create: () => MovieDetailsModel(movieId),
-              child: const MovieDetailsWidget()),
+              child: const MovieDetailsWidget(),
+          ),
+        );
+      case MainNavigationRouteNames.seriesDetails:
+        final arguments = settings.arguments;
+        final seriesId = arguments is int ? arguments : 0;
+        return MaterialPageRoute(
+          builder: (context) => NotifierProvider(
+              create: () => SeriesDetailsModel(seriesId),
+              child: const SeriesDetailsWidget(),
+          ),
         );
       case MainNavigationRouteNames.movieTrailer:
         final arguments = settings.arguments;
         final trailerKey = arguments is String ? arguments : '';
         return MaterialPageRoute(
           builder: (context) => MovieTrailerWidget(
+            youtubeKey: trailerKey,
+          ),
+        );
+      case MainNavigationRouteNames.seriesTrailer:
+        final arguments = settings.arguments;
+        final trailerKey = arguments is String ? arguments : '';
+        return MaterialPageRoute(
+          builder: (context) => SeriesTrailerWidget(
             youtubeKey: trailerKey,
           ),
         );

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:movies_mobile/domain/api_client/api_client.dart';
-import 'package:movies_mobile/domain/entity/movie/movie_details_credits.dart';
+import 'package:movies_mobile/domain/entity/series/series_details_credits.dart';
 import 'package:movies_mobile/library/widgets/inherited/provider.dart';
-import 'package:movies_mobile/ui/widgets/movie_details/movie_details_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:movies_mobile/ui/widgets/series_details/series_details_model.dart';
 
-class MovieDetailsCast extends StatelessWidget {
-  const MovieDetailsCast({Key? key}) : super(key: key);
+class SeriesDetailsCast extends StatelessWidget {
+  const SeriesDetailsCast({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsModel>(context);
-    var cast = model?.movieDetails?.credits.cast;
+    final model = NotifierProvider.watch<SeriesDetailsModel>(context);
+    var cast = model?.seriesDetails?.credits.cast;
     if (cast == null || cast.isEmpty) return const SizedBox.shrink();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -30,7 +30,7 @@ class MovieDetailsCast extends StatelessWidget {
             height: 270,
             child: Scrollbar(
               child: ListView.builder(
-                itemCount: 10,
+                itemCount: cast.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
                   return Row(

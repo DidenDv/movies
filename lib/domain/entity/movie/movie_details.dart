@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:movies_mobile/domain/entity/movie_details_credits.dart';
-import 'package:movies_mobile/domain/entity/movie_details_videos.dart';
-import 'package:movies_mobile/domain/entity/parse_date.dart';
+import 'package:movies_mobile/domain/entity/movie/movie_details_credits.dart';
+import 'package:movies_mobile/domain/entity/movie/movie_details_videos.dart';
+import 'package:movies_mobile/domain/entity/movie/parse_date.dart';
 part 'movie_details.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)

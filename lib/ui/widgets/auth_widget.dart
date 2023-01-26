@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_mobile/library/widgets/inherited/provider.dart';
 import 'package:movies_mobile/ui/widgets/auth_model.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-
 
 class AuthWidget extends StatelessWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -58,8 +56,7 @@ class _FormWidgetState extends State<_FormWidget> {
         borderSide: BorderSide(color: Color(0xffced4da), width: 1.0),
       ),
       isDense: true,
-      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10)
-  );
+      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10));
 
   @override
   Widget build(BuildContext context) {
@@ -67,20 +64,40 @@ class _FormWidgetState extends State<_FormWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('user name', style: TextStyle(fontSize: 16),),
-        const SizedBox(height: 5,),
-        TextField(decoration: decorationInput, controller: model?.loginTextController,),
-        const SizedBox(height: 20,),
+        const Text(
+          'user name',
+          style: TextStyle(fontSize: 16),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        TextField(
+          decoration: decorationInput,
+          controller: model?.loginTextController,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
         const Text('Password', style: TextStyle(fontSize: 16)),
-        const SizedBox(height: 5,),
-        TextField(decoration: decorationInput, obscureText: true, controller: model?.passwordTextController),
-        const SizedBox(height: 30,),
-        Row(children: [
-        const _AuthButtonWidget(),
-          const SizedBox(width: 10,),
-          TextButton(onPressed: () {
-          }, child: const Text('reset password'))
-        ],)
+        const SizedBox(
+          height: 5,
+        ),
+        TextField(
+            decoration: decorationInput,
+            obscureText: true,
+            controller: model?.passwordTextController),
+        const SizedBox(
+          height: 30,
+        ),
+        Row(
+          children: [
+            const _AuthButtonWidget(),
+            const SizedBox(
+              width: 10,
+            ),
+            TextButton(onPressed: () {}, child: const Text('reset password'))
+          ],
+        )
       ],
     );
   }
@@ -94,15 +111,19 @@ class _AuthButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.watch<AuthModel>(context);
-    final onPressed = model?.canStartAuth == true ? () => model?.auth(context) : null;
-    final child = model?.isAuthProgress == true ?
-    const SizedBox(width: 15, height: 15,child: CircularProgressIndicator(strokeWidth: 2,),) :
-    const Text('Login');
+    final onPressed =
+        model?.canStartAuth == true ? () => model?.auth(context) : null;
+    final child = model?.isAuthProgress == true
+        ? const SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          )
+        : const Text('Login');
 
-    return ElevatedButton(
-    onPressed: onPressed,
-      child: child
-      );
+    return ElevatedButton(onPressed: onPressed, child: child);
   }
 }
 
@@ -111,14 +132,13 @@ class _ErrorMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = NotifierProvider.watch<AuthModel>(context)?.errorMessage;
+    final errorMessage =
+        NotifierProvider.watch<AuthModel>(context)?.errorMessage;
 
-    if(errorMessage == null) return const SizedBox.shrink();
+    if (errorMessage == null) return const SizedBox.shrink();
     return Text(
       errorMessage,
       style: const TextStyle(fontSize: 17, color: Colors.red),
     );
   }
 }
-
-

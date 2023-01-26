@@ -8,6 +8,8 @@ import 'package:movies_mobile/ui/widgets/main_screen/MainScreenModel.dart';
 import 'package:movies_mobile/ui/widgets/movie_list/movie_list_model.dart';
 import 'package:movies_mobile/ui/widgets/movie_list/movie_list_widget.dart';
 import 'package:movies_mobile/ui/widgets/movie_news/movie_news.dart';
+import 'package:movies_mobile/ui/widgets/series_list/series_list_model.dart';
+import 'package:movies_mobile/ui/widgets/series_list/series_list_widget.dart';
 
 class MainScreenWidget extends StatelessWidget {
   static final mainNavigation = MainNavigation();
@@ -49,6 +51,7 @@ class NavigateWidget extends StatefulWidget {
 class _NavigateWidget extends State<NavigateWidget> {
   int _selectedIndex = 0;
   final movieListModel = MovieListModel();
+  final seriesListModel = SeriesListModel();
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   void _onItemTapped(int index) {
@@ -62,6 +65,7 @@ class _NavigateWidget extends State<NavigateWidget> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     movieListModel.setupLocal(context);
+    seriesListModel.setupLocal(context);
   }
 
   void _onExit(BuildContext context) {
@@ -88,11 +92,10 @@ class _NavigateWidget extends State<NavigateWidget> {
               isManagingModel: false,
               child: const MovieListWidget()
           ),
-          const Center(
-            child: Text(
-              'TV series',
-              style: optionStyle,
-            ),
+          NotifierProvider(
+              create: () => seriesListModel,
+              isManagingModel: false,
+              child: const SeriesListWidget()
           ),
         ],
       ),
