@@ -1,14 +1,23 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:movies_mobile/domain/api_client/api_client.dart';
 import 'package:movies_mobile/domain/entity/movie/movie.dart';
 import 'package:movies_mobile/domain/entity/movie/popular_movie_response.dart';
 import 'package:movies_mobile/ui/navigation/main_navigation.dart';
+import 'package:movies_mobile/ui/widgets/DropdownButtonModel.dart';
 
 class MovieListModel extends ChangeNotifier {
   final _apiClient = ApiClient();
+  static final List<SelectValues> _selectList = [
+    SelectValues(1, 'Popular', 'popular'),
+    SelectValues(2, 'Top rated', 'top_rated'),
+    SelectValues(3, 'Upcoming', 'upcoming'),
+    SelectValues(4, 'Now playing', 'now_playing')
+  ];
+
+  SelectValues _selectListValue = SelectValues(1, 'Popular', 'popular');
+
   final _movies = <Movie>[];
   late int _currentPage;
   late int _totalPage;
@@ -18,6 +27,8 @@ class MovieListModel extends ChangeNotifier {
   Timer? searchDebounce;
   
   List<Movie> get movies => List.unmodifiable(_movies);
+  List<SelectValues>? get selectList => _selectList;
+  SelectValues? get selectListValue => _selectListValue;
   late DateFormat _dateFormat;
 
   String stringFromDate(DateTime? date) => date != null ? _dateFormat.format(date) : '';
@@ -37,10 +48,10 @@ class MovieListModel extends ChangeNotifier {
     await _loadNextPage();
   }
 
-  Future<PopularMovieResponse> _loadMovies(int nextPage, String locale) async {
+  Future<PopularMovieResponse> _loadMovies(int nextPage, String locale, String requestKey) async {
     final query = _searchQuery;
     if(query == null) {
-      return await _apiClient.popularMovie(nextPage, _locale);
+      return await _apiClient.popularMovie(nextPage, _locale, requestKey);
     } else {
       return await _apiClient.searchMovie(nextPage, locale, query);
     }
@@ -52,7 +63,7 @@ class MovieListModel extends ChangeNotifier {
     final nextPage = _currentPage + 1;
 
     try {
-      final moviesResponse = await _loadMovies(nextPage, _locale);
+      final moviesResponse = await _loadMovies(nextPage, _locale, _selectListValue.requestKey);
       _movies.addAll(moviesResponse.movies);
       _currentPage = moviesResponse.page;
       _totalPage = moviesResponse.totalPages;
@@ -66,6 +77,13 @@ class MovieListModel extends ChangeNotifier {
   void onMovieTap(BuildContext context, int index) {
     final id = _movies[index].id;
     Navigator.of(context).pushNamed(MainNavigationRouteNames.movieDetails, arguments: id);
+  }
+
+  Future<void> onSelect(int? id) async {
+    final selectValue = _selectList.firstWhere((element) => element.id == id);
+    _selectListValue = selectValue;
+    notifyListeners();
+    await _resetList();
   }
 
   Future<void> searchMovie(String text) async {

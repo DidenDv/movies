@@ -30,14 +30,16 @@ class SeriesDetailsCast extends StatelessWidget {
             height: 270,
             child: Scrollbar(
               child: ListView.builder(
-                itemCount: cast.length,
+                itemCount: 1,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
                   return Row(
                     children: cast
-                        .map((item) => _Card(
-                              cast: item,
-                            ))
+                        .map(
+                          (item) => _Card(
+                            cast: item,
+                          ),
+                        )
                         .toList(),
                   );
                 },

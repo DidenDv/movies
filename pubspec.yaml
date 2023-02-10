@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   lints: ^2.0.1
   percent_indicator: ^4.0.1
-  shared_preferences: ^2.0.15
+  shared_preferences: ^2.0.17
   flutter_secure_storage: ^4.2.1
   cupertino_icons: ^1.0.2
   spider: ^2.2.2

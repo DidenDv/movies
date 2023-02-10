@@ -25,10 +25,14 @@ class MainNavigation {
       ? MainNavigationRouteNames.mainScreen
       : MainNavigationRouteNames.auth;
   final routes = <String, Widget Function(BuildContext context)>{
-    MainNavigationRouteNames.auth: (context) =>
-        NotifierProvider(create: () => AuthModel(), child: const AuthWidget()),
+    MainNavigationRouteNames.auth: (context) => NotifierProvider(
+          create: () => AuthModel(),
+          child: const AuthWidget(),
+        ),
     MainNavigationRouteNames.mainScreen: (context) => NotifierProvider(
-        create: () => AuthModel(), child: const NavigateWidget()),
+          create: () => AuthModel(),
+          child: const NavigateWidget(),
+        ),
   };
 
   Route<Object> onGenerateRoute(RouteSettings settings) {
@@ -38,8 +42,8 @@ class MainNavigation {
         final movieId = arguments is int ? arguments : 0;
         return MaterialPageRoute(
           builder: (context) => NotifierProvider(
-              create: () => MovieDetailsModel(movieId),
-              child: const MovieDetailsWidget(),
+            create: () => MovieDetailsModel(movieId),
+            child: const MovieDetailsWidget(),
           ),
         );
       case MainNavigationRouteNames.seriesDetails:
@@ -47,8 +51,8 @@ class MainNavigation {
         final seriesId = arguments is int ? arguments : 0;
         return MaterialPageRoute(
           builder: (context) => NotifierProvider(
-              create: () => SeriesDetailsModel(seriesId),
-              child: const SeriesDetailsWidget(),
+            create: () => SeriesDetailsModel(seriesId),
+            child: const SeriesDetailsWidget(),
           ),
         );
       case MainNavigationRouteNames.movieTrailer:

@@ -7,7 +7,7 @@ import 'package:movies_mobile/ui/navigation/main_navigation.dart';
 import 'package:movies_mobile/ui/widgets/main_screen/MainScreenModel.dart';
 import 'package:movies_mobile/ui/widgets/movie_list/movie_list_model.dart';
 import 'package:movies_mobile/ui/widgets/movie_list/movie_list_widget.dart';
-import 'package:movies_mobile/ui/widgets/movie_news/movie_news.dart';
+// import 'package:movies_mobile/ui/widgets/movie_news/movie_news.dart';
 import 'package:movies_mobile/ui/widgets/series_list/series_list_model.dart';
 import 'package:movies_mobile/ui/widgets/series_list/series_list_widget.dart';
 
@@ -52,7 +52,7 @@ class _NavigateWidget extends State<NavigateWidget> {
   int _selectedIndex = 0;
   final movieListModel = MovieListModel();
   final seriesListModel = SeriesListModel();
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  // static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   void _onItemTapped(int index) {
     if(_selectedIndex == index) return;
@@ -86,7 +86,6 @@ class _NavigateWidget extends State<NavigateWidget> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          const MovieNewsWidget(),
           NotifierProvider(
               create: () => movieListModel,
               isManagingModel: false,
@@ -104,10 +103,10 @@ class _NavigateWidget extends State<NavigateWidget> {
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+          /*BottomNavigationBarItem(
             icon: Icon(Icons.newspaper),
             label: 'News',
-          ),
+          ),*/
           BottomNavigationBarItem(
             icon: Icon(Icons.movie),
             label: 'Movies',

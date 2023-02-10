@@ -136,14 +136,14 @@ class ApiClient {
     return result;
   }
 
-  Future<PopularMovieResponse> popularMovie(int page, String locale) async {
+  Future<PopularMovieResponse> popularMovie(int page, String locale, String requestKey) async {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularMovieResponse.fromJson(jsonMap);
       return response;
     }
 
-    final result = await _get('movie/popular', parser, <String, dynamic>{
+    final result = await _get('movie/$requestKey', parser, <String, dynamic>{
       'api_key': _apiKey,
       'page': page.toString(),
       'language': locale
@@ -152,14 +152,14 @@ class ApiClient {
     return result;
   }
 
-  Future<PopularSeriesResponse> popularSeries(int page, String locale) async {
+  Future<PopularSeriesResponse> popularSeries(int page, String locale, String requestKey) async {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularSeriesResponse.fromJson(jsonMap);
       return response;
     }
 
-    final result = await _get('tv/popular', parser, <String, dynamic>{
+    final result = await _get('tv/$requestKey', parser, <String, dynamic>{
       'api_key': _apiKey,
       'page': page.toString(),
       'language': locale

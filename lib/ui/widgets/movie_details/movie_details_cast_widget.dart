@@ -30,7 +30,7 @@ class MovieDetailsCast extends StatelessWidget {
             height: 270,
             child: Scrollbar(
               child: ListView.builder(
-                itemCount: 10,
+                itemCount: 1,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
                   return Row(

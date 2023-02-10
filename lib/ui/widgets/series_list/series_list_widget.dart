@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movies_mobile/domain/api_client/api_client.dart';
 import 'package:movies_mobile/library/widgets/inherited/provider.dart';
+import 'package:movies_mobile/ui/widgets/series_list/DropdownButtonWidget.dart';
 import 'package:movies_mobile/ui/widgets/series_list/series_list_model.dart';
 
 class SeriesListWidget extends StatelessWidget {
@@ -13,7 +14,7 @@ class SeriesListWidget extends StatelessWidget {
     return Stack(
       children: [
         ListView.builder(
-          padding: const EdgeInsets.only(top: 70.0),
+          padding: const EdgeInsets.only(top: 100.0),
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           itemCount: model.series.length,
           itemExtent: 163,
@@ -80,6 +81,11 @@ class SeriesListWidget extends StatelessWidget {
               ),
             );
           },
+        ),
+        Container(
+          padding: const EdgeInsets.fromLTRB(0,60,20,0),
+          alignment: AlignmentDirectional.topEnd,
+          child: const DropdownButtonWidget(),
         ),
         Padding(
           padding: const EdgeInsets.all(10.0),
