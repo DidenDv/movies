@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:movies_mobile/domain/entity/movie/actor_details.dart';
 import 'package:movies_mobile/domain/entity/movie/movie_details.dart';
 import 'package:movies_mobile/domain/entity/movie/popular_movie_response.dart';
 import 'package:movies_mobile/domain/entity/series/popular_series_response.dart';
@@ -220,6 +221,27 @@ class ApiClient {
         'api_key': _apiKey,
         'language': locale,
         'append_to_response': 'credits,videos'
+      },
+    );
+
+    return result;
+  }
+
+  Future<ActorDetails> actorDetails(int actorId, String locale) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = ActorDetails.fromJson(jsonMap);
+
+      return response;
+    }
+
+    final result = await _get(
+      'person/$actorId',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'language': locale,
+        'append_to_response': 'external_ids'
       },
     );
 

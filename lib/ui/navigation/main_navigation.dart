@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movies_mobile/library/widgets/inherited/provider.dart';
+import 'package:movies_mobile/ui/widgets/actor_details/ActorDetailsModel.dart';
+import 'package:movies_mobile/ui/widgets/actor_details/ActorDetailsWidget.dart';
 import 'package:movies_mobile/ui/widgets/auth_model.dart';
 import 'package:movies_mobile/ui/widgets/auth_widget.dart';
 import 'package:movies_mobile/ui/widgets/main_screen/MainScreenWidget.dart';
@@ -18,6 +20,8 @@ abstract class MainNavigationRouteNames {
 
   static const seriesDetails = '/series_details';
   static const seriesTrailer = '/series_details/trailer';
+
+  static const actorDetails = '/actor_details';
 }
 
 class MainNavigation {
@@ -69,6 +73,15 @@ class MainNavigation {
         return MaterialPageRoute(
           builder: (context) => SeriesTrailerWidget(
             youtubeKey: trailerKey,
+          ),
+        );
+      case MainNavigationRouteNames.actorDetails:
+        final arguments = settings.arguments;
+        final actorId = arguments is int ? arguments : 0;
+        return MaterialPageRoute(
+          builder: (context) => NotifierProvider(
+          create: () => ActorDetailsModel(actorId),
+          child: const ActorDetailsWidget(),
           ),
         );
       default:

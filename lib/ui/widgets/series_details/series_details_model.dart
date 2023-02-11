@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:movies_mobile/domain/api_client/api_client.dart';
 import 'package:movies_mobile/domain/data_provider/session_data_provider.dart';
 import 'package:movies_mobile/domain/entity/series/series_details.dart';
+import 'package:movies_mobile/ui/navigation/main_navigation.dart';
 
 class SeriesDetailsModel extends ChangeNotifier {
   final _sessionDataProvider = SessionDataProvider();
@@ -30,6 +31,10 @@ class SeriesDetailsModel extends ChangeNotifier {
     _locale = locale;
     _dateFormat = DateFormat.yMMMd(locale);
     await loadDetails();
+  }
+
+  void onActorDetailsTap(BuildContext context, int id) {
+    Navigator.of(context).pushNamed(MainNavigationRouteNames.actorDetails, arguments: id);
   }
 
   Future<void> loadDetails() async {

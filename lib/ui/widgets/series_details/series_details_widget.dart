@@ -30,7 +30,7 @@ class _SeriesDetailsWidgetState extends State<SeriesDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    NotifierProvider.read<SeriesDetailsModel>(context)?.setupLocal(context);
+    //NotifierProvider.read<SeriesDetailsModel>(context)?.setupLocal(context);
     return Scaffold(
       appBar: AppBar(
         title: const _TitleWidget(),

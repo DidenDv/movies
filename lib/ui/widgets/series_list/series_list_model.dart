@@ -14,8 +14,7 @@ class SeriesListModel extends ChangeNotifier {
     SelectValues(1, 'Popular', 'popular'),
     SelectValues(2, 'Top rated', 'top_rated'),
     SelectValues(3, 'Airing today', 'airing_today'),
-    SelectValues(4, 'On the air', 'on_the_air'),
-    SelectValues(5, 'Latest', 'latest')
+    SelectValues(4, 'On the air', 'on_the_air')
   ];
 
   SelectValues _selectListValue = SelectValues(1, 'Popular', 'popular');

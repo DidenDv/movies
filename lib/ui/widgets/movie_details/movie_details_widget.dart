@@ -30,7 +30,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    NotifierProvider.read<MovieDetailsModel>(context)?.setupLocal(context);
+    // NotifierProvider.read<MovieDetailsModel>(context)?.setupLocal(context);
     return Scaffold(
       appBar: AppBar(
         title: const _TitleWidget(),
